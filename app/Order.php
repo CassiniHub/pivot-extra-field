@@ -14,6 +14,6 @@ class Order extends Model
 
     public function dishes() {
 
-        return $this -> belongsToMany(Dish::class)->withPivot('dish_quantity');
+        return $this -> belongsToMany(Dish::class);
     }
 }

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Dish;
+use App\Order;
 use Illuminate\Http\Request;
+
+use function GuzzleHttp\Promise\each;
 
 class OrderController extends Controller
 {
@@ -26,14 +29,26 @@ class OrderController extends Controller
     {
         $ids    = [1, 2, 3];
         $dishes = [];
+        $totPrice = 0;
 
         foreach ($ids as $id) {
             
             $dish = Dish::findOrFail($id);
             $dishes[] = $dish;
+            $totPrice += $dish -> price;
         }
 
-        dd($dishes);
+        $order = Order::create(['totPrice' => $totPrice]);
+        $order -> dishes() -> attach($dishes);
+        $order -> save();
+
+        // factory(Order::class, 1) -> make()
+        //     -> each(function ($order, $dishes, $totPrice) {
+        //         dd($totPrice);
+        //         $order -> dishes() -> attach($dishes);
+        //         $order -> totPrice = $totPrice;
+        //         $order -> save();
+        //     });
     }
 
     /**
